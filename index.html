@@ -1,0 +1,168 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <style>.card-body, .card-header {
+        padding: 4px
+    }
+
+    .list-unstyled {
+        padding: 0;
+        margin: 0
+    }
+
+    .card {
+        margin-bottom: 8px
+    }
+    .list-group-item {
+        padding: 0 0 0 4px;
+    }
+    body {
+        font-size: 14px
+    }</style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>function printDiv(n) {
+        var e = document.getElementById(n).innerHTML, d = document.body.innerHTML;
+        document.body.innerHTML = e, window.print(), document.body.innerHTML = d
+    }</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid"><a class="navbar-brand" href="#">Resume</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span
+                class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link active" onclick='printDiv("printableArea")' href="#">Print</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container" id="printableArea">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="row">
+                <div class="col-8"><h2 class="display-6">Saksham Sangal</h2><h4>Analyst | 2.5+ year experience</h4>
+                    <hr>
+                    <div class="card"><h6 class="card-header">Summary</h6>
+                        <div class="card-body"><em>Analyst at Deloitte USI for 1+ year. Former java developer and
+                            project engineer at Decimal Technology (7 months) and Wipro (1+ year) respectively. Major
+                            interest in competitive programming in java, data structure algorithm, backend development.
+                            Worked on many major and minor projects for competitions, trainings, and for
+                            self-learning</em></div>
+                    </div>
+                    <div class="card"><h6 class="card-header">Experience</h6>
+                        <div class="card-body">
+                            <div class="card">
+                                <div class="card-header">Deloitte USI | Analyst
+                                    <div class="float-end">July 2021-Present</div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill"></i> Using lxml python library, created
+                                            script that extract all xpath of xml.
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Created a flask application that
+                                            create JSON which can result into doc file using Jijna2 and DocxTemplate
+                                            (https://github.com/sakshamsangal/dmt). Also created a script that split
+                                            large XML into chunks of XML.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">Decimal Technology | Associate Engineer L1
+                                    <div class="float-end">Nov 2020-May 2021</div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill"></i> Consumed and developed REST API,
+                                            Saved the response into MySQL database using hibernate and java spring boot.
+                                            Also involved in deployment of jar and angular build on UAT and prod server.
+                                            Integrated tickets from service now and internal ticket mgt. system.
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Created REST API for the project
+                                            (add, view, view-all, update API etc.). using java spring boot.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">Wipro Limited | Project Engineer
+                                    <div class="float-end">July 2018-August 2019</div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-unstyled">
+                                        <li><i class="bi bi-check-circle-fill"></i> I was responsible for adding new
+                                            feature to existing spring boot application and also involved in solving
+                                            technical tickets through service-now portal.
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card"><h6 class="card-header">Personal Info</h6>
+                        <div class="card-body">
+                            <ul class="list-group">
+                                <li class="list-group-item"><i class="bi bi-calendar2-event"></i> DOB: 27-Nov-1996</li>
+                                <li class="list-group-item"><i class="bi bi-phone"></i> 8218312880</li>
+                                <li class="list-group-item"><i class="bi bi-envelope-fill"></i> sakshamsangal111@gmail.com</li>
+                                <li class="list-group-item"><i class="bi bi-geo-alt-fill"></i> HN-153, Adarsh colony, Muzaffarnagar, Pin:251001,
+                                    Uttar Pradesh, India
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-person"></i> Gender: Male</li>
+                                <li class="list-group-item"><i class="bi bi-linkedin"></i> <a
+                                        href="https://www.linkedin.com/in/sakshamsangal111">sakshamsangal111</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card"><h6 class="card-header">Skills</h6>
+                        <div class="card-body">
+                            <ul class="list-group">
+
+                                <li class="list-group-item"><strong>Primary: </strong><em> Python, Java</em></li>
+                                <li class="list-group-item"><strong>Secondary: </strong>Python library (pandas, numpy, lxml etc.), FastApi, Flask, SQL, Spring framework, HTML, CSS, JS</li>
+                                <li class="list-group-item"><strong>Tools: </strong>Git, PyCharm, IntelliJ, Azure DevOps, Jira, MS Excel</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card"><h6 class="card-header">Awards</h6>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-award"></i> <em>Spot award for excellence in work</em></li>
+                                <li><i class="bi bi-award"></i> <em>KPIT innovation award</em></li>
+                                <li><i class="bi bi-award"></i> <em>Smart India Hackathon, 2018</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card"><h6 class="card-header">Education</h6>
+                        <div class="card-body">
+                            <div>B.Tech | CSE
+                                <div class="float-end">2014-2018</div>
+                            </div>
+                            <div class="text-secondary">AKTU, Lucknow | Aggregate: 75%</div>
+                            <div>Intermediate | PCM
+                                <div class="float-end">2013-2014</div>
+                            </div>
+                            <div class="text-secondary">CBSE | Aggregate: 88.8%</div>
+                            <div>Matriculation
+                                <div class="float-end">2011-2012</div>
+                            </div>
+                            <div class="text-secondary">CBSE | CGPA: 9.2 CGPA</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
