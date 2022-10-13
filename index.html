@@ -17,9 +17,11 @@
     .card {
         margin-bottom: 8px
     }
+
     .list-group-item {
         padding: 0 0 0 4px;
     }
+
     body {
         font-size: 14px
     }</style>
@@ -30,20 +32,20 @@
     }</script>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid"><a class="navbar-brand" href="#">Resume</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span
-                class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link active" onclick='printDiv("printableArea")' href="#">Print</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-<div class="container" id="printableArea">
+<!--<nav class="navbar navbar-expand-lg navbar-light bg-light">-->
+<!--    <div class="container-fluid"><a class="navbar-brand" href="#">Resume</a>-->
+<!--        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"-->
+<!--                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span-->
+<!--                class="navbar-toggler-icon"></span></button>-->
+<!--        <div class="collapse navbar-collapse" id="navbarNav">-->
+<!--            <ul class="navbar-nav">-->
+<!--                <li class="nav-item"><a class="nav-link active" onclick='printDiv("printableArea")' href="#">Print</a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+<div class="container mt-1" id="printableArea">
     <div class="row">
         <div class="col-md-8 offset-md-2">
             <div class="row">
@@ -64,13 +66,16 @@
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled">
-                                        <li><i class="bi bi-check-circle-fill"></i> Using lxml python library, created
-                                            script that extract all xpath of xml.
+                                        <div><strong>Thomson Reuters</strong></div>
+                                        <li><i class="bi bi-check-circle-fill"></i>
+                                            <em>Tech stack used: Python library(lxml, pandas), SQLite, MS Excel, FastAPI</em>
                                         </li>
-                                        <li><i class="bi bi-check-circle-fill"></i> Created a flask application that
-                                            create JSON which can result into doc file using Jijna2 and DocxTemplate
-                                            (https://github.com/sakshamsangal/dmt). Also created a script that split
-                                            large XML into chunks of XML.
+                                        <li><i class="bi bi-check-circle-fill"></i> Developed mapping sheet and transformation rule for content migration</li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Performed XML analysis and model making of legacy XML.
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Automated transformation rule doc file generation.
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Created various python scripts split e.g. split large XML into chunks of XML.
                                         </li>
                                     </ul>
                                 </div>
@@ -81,13 +86,15 @@
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled">
-                                        <li><i class="bi bi-check-circle-fill"></i> Consumed and developed REST API,
-                                            Saved the response into MySQL database using hibernate and java spring boot.
-                                            Also involved in deployment of jar and angular build on UAT and prod server.
-                                            Integrated tickets from service now and internal ticket mgt. system.
+                                        <div><strong>Bandhan bank</strong></div>
+                                        <li><i class="bi bi-check-circle-fill"></i>
+                                            <em>Tech stack used: Java SpringBoot, MYSQL, Java JDBC Template</em>
                                         </li>
-                                        <li><i class="bi bi-check-circle-fill"></i> Created REST API for the project
-                                            (add, view, view-all, update API etc.). using java spring boot.
+                                        <li><i class="bi bi-check-circle-fill"></i> Consumed and developed REST API and saved the response into MySQL db.
+                                        </li>
+                                        <div><strong>MChoice</strong></div>
+                                        <li><i class="bi bi-check-circle-fill"></i> Integrated the tickets from service now portal and internal ticket mgt. system.</li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Created REST API and performed unit testing
                                         </li>
                                     </ul>
                                 </div>
@@ -98,10 +105,16 @@
                                 </div>
                                 <div class="card-body">
                                     <ul class="list-unstyled">
-                                        <li><i class="bi bi-check-circle-fill"></i> I was responsible for adding new
-                                            feature to existing spring boot application and also involved in solving
-                                            technical tickets through service-now portal.
+                                        <div><strong>Shaw Cable</strong></div>
+                                        <li><i class="bi bi-check-circle-fill"></i>
+                                            <em>Tech stack used: SQL, Java SpringBoot, JUnit</em>
                                         </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Created RestApi and performed unit testing.
+                                        </li>
+                                        <li><i class="bi bi-check-circle-fill"></i> Involved in operations, resolved tickets by executing some queries, making api call etc.
+                                        </li>
+
+
                                     </ul>
                                 </div>
                             </div>
@@ -114,8 +127,11 @@
                             <ul class="list-group">
                                 <li class="list-group-item"><i class="bi bi-calendar2-event"></i> DOB: 27-Nov-1996</li>
                                 <li class="list-group-item"><i class="bi bi-phone"></i> 8218312880</li>
-                                <li class="list-group-item"><i class="bi bi-envelope-fill"></i> sakshamsangal111@gmail.com</li>
-                                <li class="list-group-item"><i class="bi bi-geo-alt-fill"></i> HN-153, Adarsh colony, Muzaffarnagar, Pin:251001,
+                                <li class="list-group-item"><i class="bi bi-envelope-fill"></i>
+                                    sakshamsangal111@gmail.com
+                                </li>
+                                <li class="list-group-item"><i class="bi bi-geo-alt-fill"></i> HN-153, Adarsh colony,
+                                    Muzaffarnagar, Pin:251001,
                                     Uttar Pradesh, India
                                 </li>
                                 <li class="list-group-item"><i class="bi bi-person"></i> Gender: Male</li>
@@ -129,17 +145,20 @@
                             <ul class="list-group">
 
                                 <li class="list-group-item"><strong>Primary: </strong><em> Python, Java</em></li>
-                                <li class="list-group-item"><strong>Secondary: </strong>Python library (pandas, numpy, lxml etc.), FastApi, Flask, SQL, Spring framework, HTML, CSS, JS</li>
-                                <li class="list-group-item"><strong>Tools: </strong>Git, PyCharm, IntelliJ, Azure DevOps, Jira, MS Excel</li>
+                                <li class="list-group-item"><strong>Secondary: </strong>Python library (pandas, numpy,
+                                    lxml etc.), FastApi, Flask, SQL, Spring framework, HTML, CSS, JS
+                                </li>
+                                <li class="list-group-item"><strong>Tools: </strong>Git, PyCharm, IntelliJ, Azure
+                                    DevOps, Jira, MS Excel
+                                </li>
                             </ul>
                         </div>
                     </div>
                     <div class="card"><h6 class="card-header">Awards</h6>
                         <div class="card-body">
                             <ul class="list-unstyled">
-                                <li><i class="bi bi-award"></i> <em>Spot award for excellence in work</em></li>
-                                <li><i class="bi bi-award"></i> <em>KPIT innovation award</em></li>
-                                <li><i class="bi bi-award"></i> <em>Smart India Hackathon, 2018</em></li>
+                                <li><i class="bi bi-award"></i> <em>Spot award for excellence in work in Deloitte, 2022</em></li>
+                                <li><i class="bi bi-award"></i> <em>KPIT innovation award in Smart India Hackathon during college, 2018</em></li>
                             </ul>
                         </div>
                     </div>
