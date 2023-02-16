@@ -1,0 +1,100 @@
+* {
+  margin: 0;
+  pad: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family:Roboto,Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  background-color: #eeeeee;
+  color: #374257;
+  /* color: #2B3A55; */
+  /* background-color: #E5D9B6; */
+}
+
+.container-fluid {
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto
+}
+
+.container {
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: auto;
+  margin-left: auto
+}
+
+@media (min-width: 768px) {
+  .container {
+
+      width: 760px
+  }
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+}
+/* body {
+  color: #222;
+  background-color: rgb(198, 197, 197);
+}
+
+nav {
+  display: flex;
+  border: 1px solid black;
+}
+
+nav > span {
+  border: 1px solid black;
+  padding: 5px 10px;
+}
+a {
+    text-decoration: none;
+    cursor: pointer;
+} */
+
+/* .ab2 {
+  margin-left: auto;
+} */
+
+.mt-5 {
+  margin-top: 50px;
+}
+
+.topnav {
+  position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */
+  overflow: hidden;
+  z-index: 2;
+  background-color: #181D31;
+}
+
+.topnav a {
+  float: left;
+  color: #E6DDC4;
+  text-align: center;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.topnav a:hover {
+  background-color: #F0E9D2;
+  color: black;
+}
+
+.topnav a.active {
+  /* border-bottom: 5px solid #678983; */
+  background-color: #E5BA73;
+  /*background-color: #FBEDE2;*/
+  color: #181D31;
+  font-weight: bold;
+}
+
+.max-width {
+  max-width: 170px;
+}

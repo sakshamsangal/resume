@@ -1,0 +1,80 @@
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.float-end {
+    float: right;
+}
+
+.hr-green {
+    border-top: none;
+    border-bottom: 3px dashed #86BC25;
+    margin: 5px 0 5px 0;
+}
+
+.hr-green-dashed {
+    border-bottom: 2px solid #86BC25;
+    margin: 5px 0 5px 0;
+}
+
+.card-header {
+    /* background-color: #86BC25; */
+    border-left: 5px solid #86BC25;
+    /* border-bottom: 1px solid #374257; */
+    /* background-color: #86BC25; */
+}
+
+.card-body,
+.card-header {
+    padding: 4px;
+}
+
+ul {
+    padding-inline-start: 20px;
+}
+
+.list-unstyled {
+    padding: 0;
+    margin: 0;
+}
+
+.card {
+    /* border-bottom: 1px solid #374257; */
+    /* border: 1px solid #374257; */
+    margin-bottom: 8px
+}
+
+.proj {
+    padding: 4px;
+    margin-top: 4px;
+    margin-left: 8px;
+    border-radius: 3px;
+    border: 2px dashed #86BC25;
+}
+
+.list-group-item {
+    padding: 0 0 0 4px;
+}
+
+
+
+
+@media print {
+    .noprint {
+        display: none
+    }
+}
+@page {
+    size: A4;
+    margin: 0;
+    padding: 0;
+}
+
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
