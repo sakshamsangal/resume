@@ -24,10 +24,26 @@
 ### kmp
 - can I be equal something smaller?
 - can we compare smaller substring?
--
 - can be equal something smaller?
 
 ## Jun 17, 2024 Monday
+### max tip
+- order which waiter will pick? 
+- who is getting more tip that waiter should pick
+
+### dijkstra
+- distance is infinite now 
+- which node to fix? min distance 
+- make distance smaller by comparing 
+  - current distance 
+  - distance from fixed node 
+  - smaller wins
+
+### dis & low
+- **can u go up?**
+- there is no road from me.
+- not sure, need to ask from child if they can go up.
+- 
 
 
 
