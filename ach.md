@@ -1,6 +1,6 @@
 ## What I achieved?
 
-## Jun 16, 2024 Monday 3:56
+## Jun 16, 2024 Monday
 ### candy problem
 - **Do I have extra candy?**
 - I don't have any extra candy, let me check with my children if they have..
@@ -27,7 +27,7 @@
 -
 - can be equal something smaller?
 
-## Jun 17, 2024 Monday 3:55
+## Jun 17, 2024 Monday
 
 
 
