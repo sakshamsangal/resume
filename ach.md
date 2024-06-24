@@ -65,8 +65,6 @@
 - like 4th item
 - if there is common get low index
 
-
-
 ### lps
 - urs lps is 5
 - mine will be 6
