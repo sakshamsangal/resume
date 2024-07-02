@@ -23,5 +23,7 @@
 ### kmp
 - can I be equal something smaller?
 - can we compare smaller substring?
--
 - can be equal something smaller?
+
+- [next permutation](./md/np.md)
+- 
