@@ -1,0 +1,33 @@
+= Saksham Sangal
+// :toc: left
+
+[.lead]
+Backend developer | 4.5+ years exp
+
+* sakshamsangal111@gmail.com
+* 8218312880 | https://www.linkedin.com/in/sakshamsangal111[linkedin, window=_blank]
+
+== Skills
+* *Programming languages:* Java-4yr, Python-1yr, JUnit-4yr
+* *Framework*: Spring boot-4yr, Hibernate-2yr
+* *Tools*: Git-4yr, Datadog-1yr
+
+== Key highlights
+* Implemented einvoice flow using SOLID principles.
+* Developed REST API for eInvoice details without sonar issues
+* Developed a scheduled process to update einvoice status.
+* Worked on JUnit5 tests for functional cases & test coverage of 80%.
+* Fixed API performance by removing unnecessary api call & applied multi
+threading.
+* Developed an analysis tool XML Analyzer which generate xpaths, tags,
+attributes from XML improving the manual effort by 90%.
+
+== Corporate timeline
+Project Eng. --> Associate Analyst --> Analyst --> Consultant
+[%header,format=csv]
+|===
+Company,Start date,End date, Duration
+Deloitte USI, July 2021, Present, 3+ year
+Decimal Tech., Nov 2021, May 2021, 7 months
+Wipro Ltd., July 2018, August 2019, 13 months
+|===
