@@ -23,7 +23,7 @@ threading.
 attributes from XML improving the manual effort by 90%.
 
 == Corporate timeline
-Project Eng. --> Associate Analyst --> Analyst --> Consultant
+Project Eng. -> Associate Analyst -> Analyst -> Consultant
 [%header,format=csv]
 |===
 Company,Start date,End date, Duration
