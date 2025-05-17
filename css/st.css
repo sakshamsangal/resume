@@ -6,7 +6,7 @@ body{
     font-size: 15px;
 }
 li {
-    color: #395498;
+   /* color: #395498; */
 }
 .float-end {
     float: right;
