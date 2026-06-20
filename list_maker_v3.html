@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Selector</title>
+
+  <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial,sans-serif;
+    }
+
+    body{
+        background:#f5f5f5;
+        padding:30px;
+    }
+
+    .container{
+        max-width:900px;
+        margin:auto;
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1{
+        margin-bottom:20px;
+        text-align:center;
+    }
+
+    .section{
+        margin-bottom:25px;
+    }
+
+    .section h2{
+        margin-bottom:12px;
+        font-size:18px;
+    }
+
+    .options{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .option-btn{
+        border:1px solid #d0d0d0;
+        background:white;
+        padding:10px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .option-btn:hover{
+        background:#f0f0f0;
+    }
+
+    .active{
+        background:#2563eb;
+        color:white;
+        border-color:#2563eb;
+    }
+
+    .disabled{
+        opacity:.45;
+        pointer-events:none;
+    }
+
+    .items-grid{
+        display:flex;
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .item-wrapper {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        background: #fafafa;
+    }
+
+    .item-main {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .item{
+        padding:10px 15px;
+        border:1px solid #ccc;
+        border-radius:8px;
+        cursor:pointer;
+        background:white;
+        transition:.2s;
+        display: inline-block;
+    }
+
+    .item.selected{
+        background:#16a34a;
+        color:white;
+        border-color:#16a34a;
+    }
+
+    .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+        padding-left: 5px;
+    }
+
+    .chip {
+        background: #e5e7eb;
+        color: #374151;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: .2s;
+    }
+
+    .chip:hover {
+        background: #d1d5db;
+    }
+
+    .chip.active {
+        background: #f59e0b;
+        color: white;
+        border-color: #d97706;
+    }
+
+    .actions{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:15px;
+    }
+
+    .action-btn{
+        padding:10px 16px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        background:#333;
+        color:white;
+    }
+
+    .action-btn:hover{
+        opacity:.9;
+    }
+
+    .list-container{
+        margin-top:15px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        padding:15px;
+        background:#fafafa;
+    }
+
+    ul{
+        padding-left:20px;
+    }
+
+    .empty{
+        color:#888;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Item Selector</h1>
+
+  <div class="section">
+    <h2>1. Select Shop</h2>
+    <div class="options" id="shopContainer"></div>
+  </div>
+
+  <div class="section disabled" id="categorySection">
+    <h2>2. Select Category</h2>
+    <div class="options" id="categoryContainer"></div>
+  </div>
+
+  <div class="section disabled" id="itemSection">
+    <h2>3. Select Items</h2>
+    <div class="items-grid" id="itemContainer"></div>
+  </div>
+
+  <div class="actions">
+    <button class="action-btn" onclick="showList()">View List</button>
+    <button class="action-btn" onclick="downloadCSV()">Download CSV</button>
+    <button class="action-btn" onclick="copyList()">Copy List</button>
+    <button class="action-btn" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div class="list-container" id="listSection">
+    <h2>Selected Items</h2>
+    <div id="selectedList" class="empty">
+      No items selected.
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  // Re-structured data to hold explicit optional suffix texts per item
+  const data = {
+      "SuperMart": {
+          "Fruits": [
+              { name: "Apple", options: ["Fresh", "Organic", "Discounted"] },
+              { name: "Banana", options: ["Ripe", "Raw"] },
+              { name: "Orange", options: ["Imported", "Local"] },
+              { name: "Mango", options: ["Alphonso", "Dasheri"] }
+          ],
+          "Vegetables": [
+              { name: "Potato", options: ["New Crop", "Old Crop"] },
+              { name: "Tomato", options: ["Local", "Hybrid"] },
+              { name: "Onion", options: ["Red", "White"] },
+              { name: "Carrot", options: ["Organic", "Cleaned"] }
+          ]
+      },
+      "ElectroStore": {
+          "Mobiles": [
+              { name: "iPhone", options: ["128GB", "256GB", "Pro"] },
+              { name: "Samsung", options: ["Ultra", "Plus"] },
+              { name: "Pixel", options: ["Pro", "a-Series"] }
+          ],
+          "Accessories": [
+              { name: "Charger", options: ["Fast Charger", "Wireless"] },
+              { name: "Power Bank", options: ["10000mAh", "20000mAh"] },
+              { name: "Earbuds", options: ["ANC", "Sports"] }
+          ]
+      },
+      "BookWorld": {
+          "Programming": [
+              { name: "Java", options: ["Old Book", "New Book"] },
+              { name: "Spring Boot", options: ["Beginner", "Advanced"] },
+              { name: "Python", options: ["Eric Matthes", "For Data Science"] }
+          ],
+          "Fiction": [
+              { name: "Harry Potter", options: ["Hardcover", "Paperback"] },
+              { name: "LOTR", options: ["Illustrated Edition", "Box Set"] },
+              { name: "Sherlock Holmes", options: ["Complete Collection", "Volume 1"] }
+          ]
+      }
+  };
+
+  let selectedShop = null;
+  let selectedCategory = null;
+
+  // Storing selections as objects: { id: "Shop-Category-Item", name: "Java", baseName: "Java", suffix: "Old Book" }
+  let selectedItems = [];
+
+  const shopContainer = document.getElementById("shopContainer");
+  const categoryContainer = document.getElementById("categoryContainer");
+  const itemContainer = document.getElementById("itemContainer");
+
+  function renderShops() {
+      shopContainer.innerHTML = "";
+      Object.keys(data).forEach(shop => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = shop;
+
+          btn.onclick = () => {
+              selectedShop = shop;
+              selectedCategory = null;
+
+              document.querySelectorAll("#shopContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderCategories();
+              clearItems();
+
+              document.getElementById("categorySection").classList.remove("disabled");
+              document.getElementById("itemSection").classList.add("disabled");
+          };
+          shopContainer.appendChild(btn);
+      });
+  }
+
+  function renderCategories() {
+      categoryContainer.innerHTML = "";
+      Object.keys(data[selectedShop]).forEach(category => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = category;
+
+          btn.onclick = () => {
+              selectedCategory = category;
+
+              document.querySelectorAll("#categoryContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderItems();
+              document.getElementById("itemSection").classList.remove("disabled");
+          };
+          categoryContainer.appendChild(btn);
+      });
+  }
+
+  function renderItems() {
+      itemContainer.innerHTML = "";
+      const items = data[selectedShop][selectedCategory];
+
+      items.forEach(itemObj => {
+          const uniqueId = `${selectedShop}-${selectedCategory}-${itemObj.name}`;
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "item-wrapper";
+
+          const mainDiv = document.createElement("div");
+          mainDiv.className = "item-main";
+
+          const itemBtn = document.createElement("div");
+          itemBtn.className = "item";
+          itemBtn.textContent = itemObj.name;
+
+          // Track active states using the unique layout identification
+          const existingSelection = selectedItems.find(i => i.id === uniqueId);
+          if (existingSelection) {
+              itemBtn.classList.add("selected");
+          }
+
+          // Container holding context sub-options
+          const chipsContainer = document.createElement("div");
+          chipsContainer.className = "chips-container";
+          chipsContainer.style.display = existingSelection ? "flex" : "none";
+
+          itemBtn.onclick = () => {
+              const itemIdx = selectedItems.findIndex(i => i.id === uniqueId);
+
+              if (itemIdx > -1) {
+                  selectedItems.splice(itemIdx, 1);
+                  itemBtn.classList.remove("selected");
+                  chipsContainer.style.display = "none";
+                  // Reset chip selections on uncheck
+                  chipsContainer.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+              } else {
+                  selectedItems.push({
+                      id: uniqueId,
+                      baseName: itemObj.name,
+                      name: itemObj.name,
+                      suffix: ""
+                  });
+                  itemBtn.classList.add("selected");
+                  chipsContainer.style.display = "flex";
+              }
+              updateList();
+          };
+
+          mainDiv.appendChild(itemBtn);
+          wrapper.appendChild(mainDiv);
+
+          // Populate sub-chips options dynamically inside row context
+          itemObj.options.forEach(optText => {
+              const chip = document.createElement("div");
+              chip.className = "chip";
+              chip.textContent = optText;
+
+              if (existingSelection && existingSelection.suffix === optText) {
+                  chip.classList.add("active");
+              }
+
+              chip.onclick = () => {
+                  const targetItem = selectedItems.find(i => i.id === uniqueId);
+                  if (!targetItem) return;
+
+                  if (chip.classList.contains("active")) {
+                      chip.classList.remove("active");
+                      targetItem.suffix = "";
+                      targetItem.name = targetItem.baseName;
+                  } else {
+                      chipsContainer.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+                      chip.classList.add("active");
+                      targetItem.suffix = optText;
+                      targetItem.name = `${targetItem.baseName} - ${optText}`;
+                  }
+                  updateList();
+              };
+              chipsContainer.appendChild(chip);
+          });
+
+          wrapper.appendChild(chipsContainer);
+          itemContainer.appendChild(wrapper);
+      });
+  }
+
+  function clearItems() {
+      itemContainer.innerHTML = "";
+  }
+
+  function updateList() {
+      const listContainer = document.getElementById("selectedList");
+
+      if (selectedItems.length === 0) {
+          listContainer.innerHTML = '<div class="empty">No items selected.</div>';
+          return;
+      }
+
+      let html = "<ul>";
+      selectedItems.forEach(item => {
+          html += `<li>${item.name}</li>`;
+      });
+      html += "</ul>";
+
+      listContainer.innerHTML = html;
+  }
+
+  function showList() {
+      document.getElementById("listSection").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function copyList() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      const textToCopy = selectedItems.map(item => item.name).join("\n");
+      navigator.clipboard.writeText(textToCopy);
+      alert("Copied to clipboard.");
+  }
+
+  function downloadCSV() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      let csv = "Item\n";
+      selectedItems.forEach(item => {
+          csv += `"${item.name}"\n`; // Wrapped in quotes to ensure clean formatting arrays
+      });
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "selected-items.csv";
+      a.click();
+
+      URL.revokeObjectURL(url);
+  }
+
+  function resetAll() {
+      selectedShop = null;
+      selectedCategory = null;
+      selectedItems = [];
+
+      document.getElementById("categorySection").classList.add("disabled");
+      document.getElementById("itemSection").classList.add("disabled");
+
+      categoryContainer.innerHTML = "";
+      itemContainer.innerHTML = "";
+
+      document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("active"));
+      updateList();
+  }
+
+  renderShops();
+  updateList();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Selector</title>
+
+  <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial,sans-serif;
+    }
+
+    body{
+        background:#f5f5f5;
+        padding:30px;
+    }
+
+    .container{
+        max-width:900px;
+        margin:auto;
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1{
+        margin-bottom:20px;
+        text-align:center;
+    }
+
+    .section{
+        margin-bottom:25px;
+    }
+
+    .section h2{
+        margin-bottom:12px;
+        font-size:18px;
+    }
+
+    .options{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .option-btn{
+        border:1px solid #d0d0d0;
+        background:white;
+        padding:10px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .option-btn:hover{
+        background:#f0f0f0;
+    }
+
+    .active{
+        background:#2563eb;
+        color:white;
+        border-color:#2563eb;
+    }
+
+    .disabled{
+        opacity:.45;
+        pointer-events:none;
+    }
+
+    .items-grid{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .item{
+        padding:10px 15px;
+        border:1px solid #ccc;
+        border-radius:8px;
+        cursor:pointer;
+        background:white;
+        transition:.2s;
+    }
+
+    .item.selected{
+        background:#16a34a;
+        color:white;
+        border-color:#16a34a;
+    }
+
+    .actions{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:15px;
+    }
+
+    .action-btn{
+        padding:10px 16px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        background:#333;
+        color:white;
+    }
+
+    .action-btn:hover{
+        opacity:.9;
+    }
+
+    .list-container{
+        margin-top:15px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        padding:15px;
+        background:#fafafa;
+    }
+
+    ul{
+        padding-left:20px;
+    }
+
+    .empty{
+        color:#888;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Item Selector</h1>
+
+  <div class="section">
+    <h2>1. Select Shop</h2>
+    <div class="options" id="shopContainer"></div>
+  </div>
+
+  <div class="section disabled" id="categorySection">
+    <h2>2. Select Category</h2>
+    <div class="options" id="categoryContainer"></div>
+  </div>
+
+  <div class="section disabled" id="itemSection">
+    <h2>3. Select Items</h2>
+    <div class="items-grid" id="itemContainer"></div>
+  </div>
+
+  <div class="actions">
+    <button class="action-btn" onclick="showList()">View List</button>
+    <button class="action-btn" onclick="downloadCSV()">Download CSV</button>
+    <button class="action-btn" onclick="copyList()">Copy List</button>
+    <button class="action-btn" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div class="list-container" id="listSection">
+    <h2>Selected Items</h2>
+    <div id="selectedList" class="empty">
+      No items selected.
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  const itemTags = [
+  "New",
+  "Old",
+  "Recommended",
+  "Gift",
+  "Beginner",
+  "Advanced"
+];
+
+  const data = {
+      "SuperMart": {
+          "Fruits": ["Apple","Banana","Orange","Mango"],
+          "Vegetables": ["Potato","Tomato","Onion","Carrot"]
+      },
+      "ElectroStore": {
+          "Mobiles": ["iPhone","Samsung","Pixel"],
+          "Accessories": ["Charger","Power Bank","Earbuds"]
+      },
+      "BookWorld": {
+          "Programming": ["Java","Spring Boot","Python"],
+          "Fiction": ["Harry Potter","LOTR","Sherlock Holmes"]
+      }
+  };
+
+  let selectedShop = null;
+  let selectedCategory = null;
+let selectedItems = [];
+// Example:
+// [
+//   {
+//      shop: "BookWorld",
+//      category: "Programming",
+//      item: "Java",
+//      tags: ["Old", "Recommended"]
+//   }
+// ]
+
+  const shopContainer = document.getElementById("shopContainer");
+  const categoryContainer = document.getElementById("categoryContainer");
+  const itemContainer = document.getElementById("itemContainer");
+
+function getSelectedItem(itemName) {
+    return selectedItems.find(
+        x =>
+            x.shop === selectedShop &&
+            x.category === selectedCategory &&
+            x.item === itemName
+    );
+}
+
+function isItemSelected(itemName) {
+    return !!getSelectedItem(itemName);
+}
+  function renderShops() {
+
+      shopContainer.innerHTML = "";
+
+      Object.keys(data).forEach(shop => {
+
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = shop;
+
+          btn.onclick = () => {
+
+              selectedShop = shop;
+              selectedCategory = null;
+
+              document.querySelectorAll("#shopContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderCategories();
+              clearItems();
+
+              document.getElementById("categorySection")
+                  .classList.remove("disabled");
+
+              document.getElementById("itemSection")
+                  .classList.add("disabled");
+          };
+
+          shopContainer.appendChild(btn);
+      });
+  }
+
+  function renderCategories() {
+
+      categoryContainer.innerHTML = "";
+
+      Object.keys(data[selectedShop]).forEach(category => {
+
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = category;
+
+          btn.onclick = () => {
+
+              selectedCategory = category;
+
+              document.querySelectorAll("#categoryContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderItems();
+
+              document.getElementById("itemSection")
+                  .classList.remove("disabled");
+          };
+
+          categoryContainer.appendChild(btn);
+      });
+  }
+
+  function renderItems() {
+
+    itemContainer.innerHTML = "";
+
+    const items = data[selectedShop][selectedCategory];
+
+    items.forEach(itemName => {
+
+        const wrapper = document.createElement("div");
+        wrapper.style.marginBottom = "12px";
+
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "item";
+        itemDiv.textContent = itemName;
+
+        const existing = getSelectedItem(itemName);
+
+        if (existing) {
+            itemDiv.classList.add("selected");
+        }
+
+        const tagContainer = document.createElement("div");
+        tagContainer.style.marginTop = "8px";
+        tagContainer.style.display = existing ? "flex" : "none";
+        tagContainer.style.flexWrap = "wrap";
+        tagContainer.style.gap = "6px";
+
+        itemTags.forEach(tag => {
+
+            const tagBtn = document.createElement("button");
+
+            tagBtn.textContent = tag;
+            tagBtn.className = "option-btn";
+            tagBtn.style.padding = "4px 10px";
+            tagBtn.style.fontSize = "12px";
+
+            if (
+                existing &&
+                existing.tags.includes(tag)
+            ) {
+                tagBtn.classList.add("active");
+            }
+
+            tagBtn.onclick = (e) => {
+
+                e.stopPropagation();
+
+                const selected = getSelectedItem(itemName);
+
+                if (!selected) return;
+
+                if (selected.tags.includes(tag)) {
+
+                    selected.tags =
+                        selected.tags.filter(
+                            t => t !== tag
+                        );
+
+                    tagBtn.classList.remove("active");
+
+                } else {
+
+                    selected.tags.push(tag);
+                    tagBtn.classList.add("active");
+                }
+
+                updateList();
+            };
+
+            tagContainer.appendChild(tagBtn);
+        });
+
+        itemDiv.onclick = () => {
+
+            const selected = getSelectedItem(itemName);
+
+            if (selected) {
+
+                selectedItems =
+                    selectedItems.filter(
+                        x =>
+                            !(
+                                x.shop === selectedShop &&
+                                x.category === selectedCategory &&
+                                x.item === itemName
+                            )
+                    );
+
+                itemDiv.classList.remove("selected");
+                tagContainer.style.display = "none";
+
+            } else {
+
+                selectedItems.push({
+                    shop: selectedShop,
+                    category: selectedCategory,
+                    item: itemName,
+                    tags: []
+                });
+
+                itemDiv.classList.add("selected");
+                tagContainer.style.display = "flex";
+            }
+
+            updateList();
+        };
+
+        wrapper.appendChild(itemDiv);
+        wrapper.appendChild(tagContainer);
+
+        itemContainer.appendChild(wrapper);
+    });
+}
+
+
+  function clearItems() {
+      itemContainer.innerHTML = "";
+  }
+
+function updateList() {
+
+    const listContainer =
+        document.getElementById("selectedList");
+
+    if (selectedItems.length === 0) {
+
+        listContainer.innerHTML =
+            '<div class="empty">No items selected.</div>';
+
+        return;
+    }
+
+    let html = `
+        <table style="width:100%;border-collapse:collapse;">
+            <tr>
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">Shop</th>
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">Category</th>
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">Item</th>
+                <th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;">Tags</th>
+            </tr>
+    `;
+
+    selectedItems.forEach(row => {
+
+        html += `
+            <tr>
+                <td style="padding:8px;">${row.shop}</td>
+                <td style="padding:8px;">${row.category}</td>
+                <td style="padding:8px;">${row.item}</td>
+                <td style="padding:8px;">
+                    ${row.tags.join(", ")}
+                </td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    listContainer.innerHTML = html;
+}
+  function showList() {
+      document
+          .getElementById("listSection")
+          .scrollIntoView({
+              behavior:"smooth"
+          });
+  }
+function copyList() {
+
+    if (!selectedItems.length) {
+        alert("No items selected.");
+        return;
+    }
+
+    const text = selectedItems
+        .map(
+            x =>
+                `${x.shop} | ${x.category} | ${x.item} | ${x.tags.join(", ")}`
+        )
+        .join("\n");
+
+    navigator.clipboard.writeText(text);
+}
+
+
+function downloadCSV() {
+
+    if (!selectedItems.length) {
+        alert("No items selected.");
+        return;
+    }
+
+    let csv =
+        "Shop,Category,Item,Tags\n";
+
+    selectedItems.forEach(x => {
+
+        csv += `"${x.shop}","${x.category}","${x.item}","${x.tags.join(";")}"\n`;
+    });
+
+    const blob = new Blob(
+        [csv],
+        { type: "text/csv" }
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = "selected-items.csv";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+  function resetAll() {
+
+      selectedShop = null;
+      selectedCategory = null;
+      selectedItems = [];
+
+      document
+          .getElementById("categorySection")
+          .classList.add("disabled");
+
+      document
+          .getElementById("itemSection")
+          .classList.add("disabled");
+
+      categoryContainer.innerHTML = "";
+      itemContainer.innerHTML = "";
+
+      document
+          .querySelectorAll(".option-btn")
+          .forEach(btn => btn.classList.remove("active"));
+
+      updateList();
+  }
+
+  renderShops();
+  updateList();
+
+</script>
+
+</body>
+</html>

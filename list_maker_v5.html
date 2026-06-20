@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Selector</title>
+
+  <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial,sans-serif;
+    }
+
+    body{
+        background:#f5f5f5;
+        padding:30px;
+    }
+
+    .container{
+        max-width:900px;
+        margin:auto;
+        background:white;
+        padding:25px;
+        border-radius:12px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1{
+        margin-bottom:20px;
+        text-align:center;
+    }
+
+    .section{
+        margin-bottom:25px;
+    }
+
+    .section h2{
+        margin-bottom:12px;
+        font-size:18px;
+    }
+
+    .options{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+    }
+
+    .option-btn{
+        border:1px solid #d0d0d0;
+        background:white;
+        padding:10px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:.2s;
+    }
+
+    .option-btn:hover{
+        background:#f0f0f0;
+    }
+
+    .active{
+        background:#2563eb;
+        color:white;
+        border-color:#2563eb;
+    }
+
+    .disabled{
+        opacity:.45;
+        pointer-events:none;
+    }
+
+    .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+        padding: 12px;
+        background: #eaeefb;
+        border-radius: 8px;
+        border: 1px dashed #2563eb;
+    }
+
+    .chip {
+        background: white;
+        color: #374151;
+        padding: 8px 14px;
+        border-radius: 16px;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid #d0d0d0;
+        transition: .2s;
+    }
+
+    .chip:hover {
+        background: #f0f0f0;
+    }
+
+    .chip.active {
+        background: #f59e0b;
+        color: white;
+        border-color: #d97706;
+    }
+
+    .items-grid{
+        display:flex;
+        flex-wrap:wrap;
+        gap:12px;
+    }
+
+    /* Container for item button + its separate delete button */
+    .item-card {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: white;
+        overflow: hidden;
+        transition: .2s;
+    }
+
+    .item-card.selected {
+        border-color: #16a34a;
+        background: #f0fdf4;
+    }
+
+    .item-card.last-selected {
+        outline: 3px solid #f59e0b;
+        outline-offset: 2px;
+    }
+
+    .item-btn {
+        padding: 10px 15px;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .item-card.selected .item-btn {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+    .remove-btn {
+        padding: 10px 12px;
+        background: transparent;
+        border: none;
+        border-left: 1px solid #ccc;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 14px;
+        transition: .2s;
+    }
+
+    .remove-btn:hover {
+        background: #fee2e2;
+    }
+
+    .item-card.selected .remove-btn {
+        border-left-color: #16a34a;
+    }
+
+    .actions{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:15px;
+    }
+
+    .action-btn{
+        padding:10px 16px;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        background:#333;
+        color:white;
+    }
+
+    .action-btn:hover{
+        opacity:.9;
+    }
+
+    .list-container{
+        margin-top:15px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        padding:15px;
+        background:#fafafa;
+    }
+
+    .summary-list li {
+        margin: 6px 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        justify-content: space-between;
+        max-width: 400px;
+        background: white;
+        padding: 6px 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .list-remove-link {
+        color: #dc2626;
+        text-decoration: none;
+        font-size: 12px;
+        cursor: pointer;
+    }
+
+    .list-remove-link:hover {
+        text-decoration: underline;
+    }
+
+    .empty{
+        color:#888;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Item Selector</h1>
+
+  <div class="section">
+    <h2>1. Select Shop</h2>
+    <div class="options" id="shopContainer"></div>
+  </div>
+
+  <div class="section disabled" id="categorySection">
+    <h2>2. Select Category</h2>
+    <div class="options" id="categoryContainer"></div>
+  </div>
+
+  <div class="section disabled" id="itemSection">
+    <h2>3. Select Items</h2>
+
+    <div id="modifierLabel" style="font-size: 14px; margin-bottom: 6px; color: #555; font-weight: bold;">
+      Global Text Modifiers (No item currently focused):
+    </div>
+    <div class="chips-container" id="globalChipsContainer"></div>
+
+    <div class="items-grid" id="itemContainer"></div>
+  </div>
+
+  <div class="actions">
+    <button class="action-btn" onclick="showList()">View List</button>
+    <button class="action-btn" onclick="downloadCSV()">Download CSV</button>
+    <button class="action-btn" onclick="copyList()">Copy List</button>
+    <button class="action-btn" onclick="resetAll()">Reset</button>
+  </div>
+
+  <div class="list-container" id="listSection">
+    <h2>Selected Items</h2>
+    <div id="selectedList" class="empty">
+      No items selected.
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+  const data = {
+      "SuperMart": {
+          "Fruits": ["Apple","Banana","Orange","Mango"],
+          "Vegetables": ["Potato","Tomato","Onion","Carrot"],
+          "Pulses & Dals":['Toor Dal','Moong Dal','Chana Dal','Urad Dal','Masoor Dal','Rajma','Chana (Chickpeas)','Black Eyed Peas','Green Moong','Soya Chunks'],
+        "Rice an Grains": ['Basmati Rice','Sona Masoori Rice','Poha','Suji (Rava)','Besan','Wheat Flour','Maida','Oats','Daliya','Corn Flour'],
+        "Spices": ['Turmeric','Cumin Seeds','Mustard Seeds','Red Chilli Powder','Coriander Powder',
+        'Garam Masala','Black Pepper','Cardamom','Cloves','Cinnamon','Bay Leaves','Fennel Seeds','Asafoetida (Hing)','Dry Red Chilli','Salt','Sugar'],
+        "Oil": ['Sunflower Oil','Mustard Oil','Coconut Oil','Ghee','Vinegar','Soy Sauce','Tomato Ketchup','Green Chutney','Tamarind','Jaggery']
+      },
+      "ElectroStore": {
+          "Mobiles": ["iPhone","Samsung","Pixel"],
+          "Accessories": ["Charger","Power Bank","Earbuds"]
+      }
+  };
+  const commonChips = ["Rs 100", "Rs 500", "Rs 50", "250 g", "100 g", "1 Kg", "2 Kg", "5 Kg", "10 Kg" ];
+
+  let selectedShop = null;
+  let selectedCategory = null;
+
+  let selectedItems = [];
+  let lastSelectedItemId = null;
+
+  const shopContainer = document.getElementById("shopContainer");
+  const categoryContainer = document.getElementById("categoryContainer");
+  const itemContainer = document.getElementById("itemContainer");
+  const globalChipsContainer = document.getElementById("globalChipsContainer");
+  const modifierLabel = document.getElementById("modifierLabel");
+
+  function renderShops() {
+      shopContainer.innerHTML = "";
+      Object.keys(data).forEach(shop => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = shop;
+
+          btn.onclick = () => {
+              selectedShop = shop;
+              selectedCategory = null;
+
+              document.querySelectorAll("#shopContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderCategories();
+              clearItems();
+
+              document.getElementById("categorySection").classList.remove("disabled");
+              document.getElementById("itemSection").classList.add("disabled");
+          };
+          shopContainer.appendChild(btn);
+      });
+  }
+
+  function renderCategories() {
+      categoryContainer.innerHTML = "";
+      Object.keys(data[selectedShop]).forEach(category => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = category;
+
+          btn.onclick = () => {
+              selectedCategory = category;
+
+              document.querySelectorAll("#categoryContainer .option-btn")
+                  .forEach(b => b.classList.remove("active"));
+
+              btn.classList.add("active");
+
+              renderItems();
+              document.getElementById("itemSection").classList.remove("disabled");
+          };
+          categoryContainer.appendChild(btn);
+      });
+  }
+
+  function renderGlobalChips() {
+      globalChipsContainer.innerHTML = "";
+
+      const focusedItem = selectedItems.find(i => i.id === lastSelectedItemId);
+      const activeSuffixes = focusedItem ? focusedItem.suffixes : [];
+
+      if (focusedItem) {
+          modifierLabel.textContent = `Global Text Modifiers (Modifying: ${focusedItem.baseName})`;
+          globalChipsContainer.style.opacity = "1";
+          globalChipsContainer.style.pointerEvents = "auto";
+      } else {
+          modifierLabel.textContent = "Global Text Modifiers (Select an active item below to add tags):";
+          globalChipsContainer.style.opacity = "0.5";
+          globalChipsContainer.style.pointerEvents = "none";
+      }
+
+      commonChips.forEach(optText => {
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.textContent = optText;
+
+          if (activeSuffixes.includes(optText)) {
+              chip.classList.add("active");
+          }
+
+          chip.onclick = () => {
+              const targetItem = selectedItems.find(i => i.id === lastSelectedItemId);
+              if (!targetItem) return;
+
+              if (chip.classList.contains("active")) {
+                  chip.classList.remove("active");
+                  targetItem.suffixes = targetItem.suffixes.filter(s => s !== optText);
+              } else {
+                  chip.classList.add("active");
+                  targetItem.suffixes.push(optText);
+              }
+
+              updateList();
+          };
+          globalChipsContainer.appendChild(chip);
+      });
+  }
+
+  function renderItems() {
+      itemContainer.innerHTML = "";
+      const items = data[selectedShop][selectedCategory];
+
+      items.forEach(itemName => {
+          const uniqueId = `${selectedShop}-${selectedCategory}-${itemName}`;
+          const isSelected = selectedItems.some(i => i.id === uniqueId);
+
+          // Card wrapper holding selection button and remove action separately
+          const card = document.createElement("div");
+          card.className = "item-card";
+          if (isSelected) card.classList.add("selected");
+          if (uniqueId === lastSelectedItemId) card.classList.add("last-selected");
+
+          // Main selection button (Does NOT toggle off on click)
+          const itemBtn = document.createElement("button");
+          itemBtn.className = "item-btn";
+          itemBtn.textContent = itemName;
+          itemBtn.onclick = () => {
+              if (!isSelected) {
+                  selectedItems.push({
+                      id: uniqueId,
+                      baseName: itemName,
+                      suffixes: []
+                  });
+              }
+              lastSelectedItemId = uniqueId;
+
+              renderItems();
+              renderGlobalChips();
+              updateList();
+          };
+          card.appendChild(itemBtn);
+
+          // Dedicated Remove Button (only functional if selected)
+          if (isSelected) {
+              const removeBtn = document.createElement("button");
+              removeBtn.className = "remove-btn";
+              removeBtn.innerHTML = "&#128465;"; // Trash icon
+              removeBtn.title = "Remove item";
+              removeBtn.onclick = (e) => {
+                  e.stopPropagation(); // Stop click bubbling up
+                  removeItemById(uniqueId);
+              };
+              card.appendChild(removeBtn);
+          }
+
+          itemContainer.appendChild(card);
+      });
+  }
+
+  // Centered function to handle explicit item removals
+  function removeItemById(uniqueId) {
+      selectedItems = selectedItems.filter(i => i.id !== uniqueId);
+
+      if (lastSelectedItemId === uniqueId) {
+          if (selectedItems.length > 0) {
+              lastSelectedItemId = selectedItems[selectedItems.length - 1].id;
+          } else {
+              lastSelectedItemId = null;
+          }
+      }
+
+      renderItems();
+      renderGlobalChips();
+      updateList();
+  }
+
+  function clearItems() {
+      itemContainer.innerHTML = "";
+  }
+
+  function getFormattedItemName(itemObj) {
+      if (itemObj.suffixes && itemObj.suffixes.length > 0) {
+          return `${itemObj.baseName} - ${itemObj.suffixes.join(" - ")}`;
+      }
+      return itemObj.baseName;
+  }
+
+  function updateList() {
+      const listContainer = document.getElementById("selectedList");
+
+      if (selectedItems.length === 0) {
+          listContainer.innerHTML = '<div class="empty">No items selected.</div>';
+          return;
+      }
+
+      let html = '<ul class="summary-list">';
+      selectedItems.forEach(item => {
+          html += `
+            <li>
+                <span>${getFormattedItemName(item)}</span>
+                <span class="list-remove-link" onclick="removeItemById('${item.id}')">Remove</span>
+            </li>`;
+      });
+      html += "</ul>";
+
+      listContainer.innerHTML = html;
+  }
+
+  function showList() {
+      document.getElementById("listSection").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function copyList() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      const textToCopy = selectedItems.map(item => getFormattedItemName(item)).join("\n");
+      navigator.clipboard.writeText(textToCopy);
+      alert("Copied to clipboard.");
+  }
+
+  function downloadCSV() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      let csv = "Item\n";
+      selectedItems.forEach(item => {
+          csv += `"${getFormattedItemName(item)}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "selected-items.csv";
+      a.click();
+
+      URL.revokeObjectURL(url);
+  }
+
+  function resetAll() {
+      selectedShop = null;
+      selectedCategory = null;
+      selectedItems = [];
+      lastSelectedItemId = null;
+
+      document.getElementById("categorySection").classList.add("disabled");
+      document.getElementById("itemSection").classList.add("disabled");
+
+      categoryContainer.innerHTML = "";
+      itemContainer.innerHTML = "";
+
+      document.querySelectorAll(".option-btn").forEach(btn => btn.classList.remove("active"));
+      renderGlobalChips();
+      updateList();
+  }
+
+  renderShops();
+  renderGlobalChips();
+  updateList();
+
+</script>
+
+</body>
+</html>
