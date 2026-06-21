@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Selector</title>
+
+  <style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:Arial,sans-serif;
+    }
+
+    body{
+        background:#f5f5f5;
+        padding:20px;
+        display: flex;
+        gap: 20px;
+        min-height: 100vh;
+    }
+
+    /* Main interaction viewport */
+    .main-content {
+        flex: 1;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        align-self: flex-start;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #111827;
+    }
+
+    /* Breadcrumbs Navigation Panel */
+    .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f3f4f6;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .breadcrumb-step {
+        color: #2563eb;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .breadcrumb-step.active-step {
+        color: #4b5563;
+        font-weight: bold;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    .breadcrumb-separator {
+        color: #9ca3af;
+    }
+
+    /* Conditional View Containers */
+    .view-pane {
+        display: none;
+    }
+
+    .view-pane.active-pane {
+        display: block;
+    }
+
+    .view-pane h2 {
+        margin-bottom: 15px;
+        font-size: 18px;
+        color: #374151;
+    }
+
+    .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    /* Option button baseline styles */
+    .option-btn {
+        border: 1px solid #d1d5db;
+        background: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    /* Normal Hover only if NOT chosen */
+    .option-btn:not(.active):hover {
+        background: #f9fafb;
+        border-color: #9ca3af;
+    }
+
+    /* Active Selected State locks element color profile securely */
+    .option-btn.active {
+        background: #2563eb !important;
+        color: white !important;
+        border-color: #2563eb !important;
+        cursor: default;
+        pointer-events: none;
+    }
+
+    /* Modifier layout configuration track */
+    .chips-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+        padding: 12px;
+        background: #eaeefb;
+        border-radius: 8px;
+        border: 1px dashed #2563eb;
+    }
+
+    .chip {
+        background: white;
+        color: #374151;
+        padding: 8px 14px;
+        border-radius: 16px;
+        font-size: 13px;
+        cursor: pointer;
+        border: 1px solid #d0d0d0;
+        transition: .2s;
+    }
+
+    .chip:hover {
+        background: #f0f0f0;
+    }
+
+    .chip.active {
+        background: #f59e0b;
+        color: white;
+        border-color: #d97706;
+    }
+
+    .items-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .item-card {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: white;
+        overflow: hidden;
+        transition: .2s;
+    }
+
+    .item-card:not(.selected):hover {
+        background: #f9f9f9;
+        border-color: #b5b5b5;
+    }
+
+    .item-card.selected {
+        border-color: #16a34a;
+        background: #f0fdf4;
+    }
+
+    .item-card.selected:hover {
+        background: #f0fdf4 !important;
+        border-color: #16a34a !important;
+    }
+
+    .item-card.last-selected {
+        outline: 3px solid #f59e0b;
+        outline-offset: 2px;
+    }
+
+    .item-btn {
+        padding: 10px 15px;
+        cursor: pointer;
+        background: transparent;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        flex-grow: 1;
+        text-align: left;
+    }
+
+    .item-card.selected .item-btn {
+        color: #16a34a;
+        font-weight: bold;
+    }
+
+    .remove-btn {
+        padding: 10px 12px;
+        background: transparent;
+        border: none;
+        border-left: 1px solid #ccc;
+        color: #dc2626;
+        cursor: pointer;
+        font-size: 14px;
+        transition: .2s;
+    }
+
+    .remove-btn:hover {
+        background: #fee2e2;
+    }
+
+    .item-card.selected .remove-btn {
+        border-left-color: #16a34a;
+    }
+
+    /* PERSISTENT SIDE PANEL (DRAWER LAYOUT) */
+    .side-panel {
+        width: 320px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        display: flex;
+        flex-direction: column;
+        align-self: flex-start;
+        position: sticky;
+        top: 20px;
+        max-height: calc(100vh - 40px);
+    }
+
+    .side-panel h2 {
+        font-size: 18px;
+        margin-bottom: 15px;
+        color: #111827;
+        border-bottom: 2px solid #f3f4f6;
+        padding-bottom: 8px;
+    }
+
+    .list-wrapper-scroll {
+        flex: 1;
+        overflow-y: auto;
+        margin-bottom: 15px;
+        padding-right: 5px;
+    }
+
+    .summary-list {
+        list-style-type: none;
+    }
+
+    .summary-list li {
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: space-between;
+        background: #f9fafb;
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        font-size: 13px;
+        word-break: break-word;
+    }
+
+    .list-remove-link {
+        color: #dc2626;
+        font-size: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        flex-shrink: 0;
+    }
+
+    .list-remove-link:hover {
+        text-decoration: underline;
+    }
+
+    .side-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-btn {
+        width: 100%;
+        padding: 10px 14px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        background: #374151;
+        color: white;
+        font-weight: 500;
+        font-size: 13px;
+        transition: background-color 0.2s;
+    }
+
+    .action-btn:hover {
+        background: #1f2937;
+    }
+
+    .action-btn.reset-btn {
+        background: #ef4444;
+    }
+
+    .action-btn.reset-btn:hover {
+        background: #dc2626;
+    }
+
+    .empty {
+        color: #888;
+        font-size: 13px;
+        font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-content">
+  <h1>Item Selector</h1>
+
+  <div class="breadcrumb" id="breadcrumbTrail"></div>
+
+  <div class="view-pane" id="shopPane">
+    <h2>1. Select Shop / दुकान चुनें</h2>
+    <div class="options" id="shopContainer"></div>
+  </div>
+
+  <div class="view-pane" id="categoryPane">
+    <h2>2. Select Category / श्रेणी चुनें</h2>
+    <div class="options" id="categoryContainer"></div>
+  </div>
+
+  <div class="view-pane" id="itemPane">
+    <h2>3. Select Items / आइटम चुनें</h2>
+
+    <div id="modifierLabel" style="font-size: 13px; margin-bottom: 6px; color: #555; font-weight: bold;">
+      Global Text Modifiers:
+    </div>
+    <div class="chips-container" id="globalChipsContainer"></div>
+
+    <div class="items-grid" id="itemContainer"></div>
+  </div>
+</div>
+
+<div class="side-panel">
+  <h2>Selected Items</h2>
+  <div class="list-wrapper-scroll">
+    <div id="selectedList" class="empty">No items selected.</div>
+  </div>
+  <div class="side-actions">
+    <button class="action-btn" onclick="copyList()">Copy List</button>
+    <button class="action-btn" onclick="downloadCSV()">Download CSV</button>
+    <button class="action-btn" class="reset-btn" onclick="resetAll()" style="background:#dc2626;">Reset All</button>
+  </div>
+</div>
+
+<script>
+
+  const data = {
+      "SuperMart": {
+          "Fruits": ["Apple","Banana","Orange","Mango"],
+          "Vegetables": ["Potato","Tomato","Onion","Carrot"],
+          "Pulses & Dals":['Toor Dal','Moong Dal','Chana Dal','Urad Dal','Masoor Dal','Rajma','Chana (Chickpeas)','Black Eyed Peas','Green Moong','Soya Chunks'],
+        "Rice an Grains": ['Basmati Rice','Sona Masoori Rice','Poha','Suji (Rava)','Besan','Wheat Flour','Maida','Oats','Daliya','Corn Flour'],
+        "Spices": ['Turmeric','Cumin Seeds','Mustard Seeds','Red Chilli Powder','Coriander Powder',
+        'Garam Masala','Black Pepper','Cardamom','Cloves','Cinnamon','Bay Leaves','Fennel Seeds','Asafoetida (Hing)','Dry Red Chilli','Salt','Sugar'],
+        "Oil": ['Sunflower Oil','Mustard Oil','Coconut Oil','Ghee','Vinegar','Soy Sauce','Tomato Ketchup','Green Chutney','Tamarind','Jaggery']
+      },
+      "ElectroStore": {
+          "Mobiles": ["iPhone","Samsung","Pixel"],
+          "Accessories": ["Charger","Power Bank","Earbuds"]
+      },
+      "BookWorld": {
+          "Programming": ["Java","Spring Boot","Python"],
+          "Fiction": ["Harry Potter","LOTR","Sherlock Holmes"],
+          "किताबें (Hindi Books)": ["जावा (Java)", "पायथन (Python)", "डेटा विज्ञान (Data Science)", "मशीन लर्निंग"]
+      }
+  };
+
+  const commonChips = ["Rs 100", "Rs 500", "Rs 50", "250 g", "100 g", "1 Kg", "2 Kg", "5 Kg", "10 Kg" ];
+
+  let selectedShop = null;
+  let selectedCategory = null;
+
+  let selectedItems = [];
+  let lastSelectedItemId = null;
+
+  // Track the active UI viewport visibility layer ("shop", "category", "items")
+  let currentStage = "shop";
+
+  const shopContainer = document.getElementById("shopContainer");
+  const categoryContainer = document.getElementById("categoryContainer");
+  const itemContainer = document.getElementById("itemContainer");
+  const globalChipsContainer = document.getElementById("globalChipsContainer");
+  const modifierLabel = document.getElementById("modifierLabel");
+
+  // Re-evaluates breadcrumbs line markers dynamically
+  function updateBreadcrumbs() {
+      const trail = document.getElementById("breadcrumbTrail");
+      trail.innerHTML = "";
+
+      // Step 1 anchor reference logic
+      const stepShop = document.createElement("span");
+      stepShop.className = "breadcrumb-step";
+      stepShop.textContent = "Shops";
+      if (currentStage === "shop") {
+          stepShop.classList.add("active-step");
+      } else {
+          stepShop.onclick = () => navigateToStage("shop");
+      }
+      trail.appendChild(stepShop);
+
+      // Step 2 anchor reference logic
+      if (selectedShop) {
+          addSeparator(trail);
+          const stepCat = document.createElement("span");
+          stepCat.className = "breadcrumb-step";
+          stepCat.textContent = selectedShop;
+          if (currentStage === "category") {
+              stepCat.classList.add("active-step");
+          } else {
+              stepCat.onclick = () => navigateToStage("category");
+          }
+          trail.appendChild(stepCat);
+      }
+
+      // Step 3 anchor reference logic
+      if (selectedCategory) {
+          addSeparator(trail);
+          const stepItems = document.createElement("span");
+          stepItems.className = "breadcrumb-step";
+          stepItems.textContent = selectedCategory;
+          stepItems.classList.add("active-step");
+          trail.appendChild(stepItems);
+      }
+  }
+
+  function addSeparator(parent) {
+      const sep = document.createElement("span");
+      sep.className = "breadcrumb-separator";
+      sep.textContent = " > ";
+      parent.appendChild(sep);
+  }
+
+  // Routing manager handles viewport transition loops securely
+  function navigateToStage(stage) {
+      currentStage = stage;
+
+      // Remove display classes systematically
+      document.querySelectorAll(".view-pane").forEach(p => p.classList.remove("active-pane"));
+
+      if (stage === "shop") {
+          document.getElementById("shopPane").classList.add("active-pane");
+          selectedShop = null;
+          selectedCategory = null;
+          renderShops();
+      } else if (stage === "category") {
+          document.getElementById("categoryPane").classList.add("active-pane");
+          selectedCategory = null;
+          renderCategories();
+      } else if (stage === "items") {
+          document.getElementById("itemPane").classList.add("active-pane");
+          renderItems();
+          renderGlobalChips();
+      }
+
+      updateBreadcrumbs();
+  }
+
+  function renderShops() {
+      shopContainer.innerHTML = "";
+      Object.keys(data).forEach(shop => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = shop;
+
+          btn.onclick = () => {
+              selectedShop = shop;
+              navigateToStage("category");
+          };
+          shopContainer.appendChild(btn);
+      });
+  }
+
+  function renderCategories() {
+      categoryContainer.innerHTML = "";
+      Object.keys(data[selectedShop]).forEach(category => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.textContent = category;
+
+          btn.onclick = () => {
+              selectedCategory = category;
+              navigateToStage("items");
+          };
+          categoryContainer.appendChild(btn);
+      });
+  }
+
+  function renderGlobalChips() {
+      globalChipsContainer.innerHTML = "";
+
+      const focusedItem = selectedItems.find(i => i.id === lastSelectedItemId);
+      const activeSuffixes = focusedItem ? focusedItem.suffixes : [];
+
+      if (focusedItem) {
+          modifierLabel.textContent = `Global Text Modifiers (Modifying: ${focusedItem.baseName})`;
+          globalChipsContainer.style.opacity = "1";
+          globalChipsContainer.style.pointerEvents = "auto";
+      } else {
+          modifierLabel.textContent = "Global Text Modifiers (Click an active selected item below to edit its chips):";
+          globalChipsContainer.style.opacity = "0.5";
+          globalChipsContainer.style.pointerEvents = "none";
+      }
+
+      commonChips.forEach(optText => {
+          const chip = document.createElement("div");
+          chip.className = "chip";
+          chip.textContent = optText;
+
+          if (activeSuffixes.includes(optText)) {
+              chip.classList.add("active");
+          }
+
+          chip.onclick = () => {
+              const targetItem = selectedItems.find(i => i.id === lastSelectedItemId);
+              if (!targetItem) return;
+
+              if (chip.classList.contains("active")) {
+                  chip.classList.remove("active");
+                  targetItem.suffixes = targetItem.suffixes.filter(s => s !== optText);
+              } else {
+                  chip.classList.add("active");
+                  targetItem.suffixes.push(optText);
+              }
+
+              updateList();
+          };
+          globalChipsContainer.appendChild(chip);
+      });
+  }
+
+  function renderItems() {
+      itemContainer.innerHTML = "";
+      const items = data[selectedShop][selectedCategory];
+
+      items.forEach(itemName => {
+          const uniqueId = `${selectedShop}-${selectedCategory}-${itemName}`;
+          const isSelected = selectedItems.some(i => i.id === uniqueId);
+
+          const card = document.createElement("div");
+          card.className = "item-card";
+          if (isSelected) card.classList.add("selected");
+          if (uniqueId === lastSelectedItemId) card.classList.add("last-selected");
+
+          const itemBtn = document.createElement("button");
+          itemBtn.className = "item-btn";
+          itemBtn.textContent = itemName;
+          itemBtn.onclick = () => {
+              if (!isSelected) {
+                  selectedItems.push({
+                      id: uniqueId,
+                      baseName: itemName,
+                      suffixes: []
+                  });
+              }
+              lastSelectedItemId = uniqueId;
+
+              renderItems();
+              renderGlobalChips();
+              updateList();
+          };
+          card.appendChild(itemBtn);
+
+          if (isSelected) {
+              const removeBtn = document.createElement("button");
+              removeBtn.className = "remove-btn";
+              removeBtn.innerHTML = "&#128465;";
+              removeBtn.title = "Remove item";
+              removeBtn.onclick = (e) => {
+                  e.stopPropagation();
+                  removeItemById(uniqueId);
+              };
+              card.appendChild(removeBtn);
+          }
+
+          itemContainer.appendChild(card);
+      });
+  }
+
+  function removeItemById(uniqueId) {
+      selectedItems = selectedItems.filter(i => i.id !== uniqueId);
+
+      if (lastSelectedItemId === uniqueId) {
+          if (selectedItems.length > 0) {
+              lastSelectedItemId = selectedItems[selectedItems.length - 1].id;
+          } else {
+              lastSelectedItemId = null;
+          }
+      }
+
+      // Dynamically reflect deletions across panels natively
+      if (currentStage === "items") {
+          renderItems();
+          renderGlobalChips();
+      }
+      updateList();
+  }
+
+  function getFormattedItemName(itemObj) {
+      if (itemObj.suffixes && itemObj.suffixes.length > 0) {
+          return `${itemObj.baseName} - ${itemObj.suffixes.join(" - ")}`;
+      }
+      return itemObj.baseName;
+  }
+
+  function updateList() {
+      const listContainer = document.getElementById("selectedList");
+
+      if (selectedItems.length === 0) {
+          listContainer.innerHTML = '<div class="empty">No items selected.</div>';
+          return;
+      }
+
+      let html = '<ul class="summary-list">';
+      selectedItems.forEach(item => {
+          html += `
+            <li>
+                <span>${getFormattedItemName(item)}</span>
+                <span class="list-remove-link" onclick="removeItemById('${item.id}')">Remove</span>
+            </li>`;
+      });
+      html += "</ul>";
+
+      listContainer.innerHTML = html;
+  }
+
+  function copyList() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      const textToCopy = selectedItems.map(item => getFormattedItemName(item)).join("\n");
+      navigator.clipboard.writeText(textToCopy);
+      alert("Copied to clipboard.");
+  }
+
+  function downloadCSV() {
+      if (selectedItems.length === 0) {
+          alert("No items selected.");
+          return;
+      }
+
+      let csv = "\uFEFFItem\n";
+      selectedItems.forEach(item => {
+          csv += `"${getFormattedItemName(item)}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "selected-items.csv";
+      a.click();
+
+      URL.revokeObjectURL(url);
+  }
+
+  function resetAll() {
+      selectedItems = [];
+      lastSelectedItemId = null;
+      navigateToStage("shop");
+      updateList();
+  }
+
+  // Initial Boot Run sequence
+  navigateToStage("shop");
+  updateList();
+
+</script>
+
+</body>
+</html>
