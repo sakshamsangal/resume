@@ -1,0 +1,36 @@
+{
+  "expenses": [
+    {
+      "id": 1782564921795,
+      "amount": 100,
+      "name": "sw",
+      "date": "2026-05-02"
+    },
+    {
+      "id": 1782564902972,
+      "amount": 100,
+      "name": "sw",
+      "date": "2026-05-01"
+    },
+    {
+      "id": 1782564882776,
+      "amount": 100,
+      "name": "swimming pool",
+      "date": "2026-05-01"
+    },
+    {
+      "id": 1782564874056,
+      "amount": 100,
+      "name": "swimming pool",
+      "date": "2026-05-01"
+    }
+  ],
+  "budgets": {
+    "2026-05": 20000
+  },
+  "nameCounts": {
+    "Expense": 1,
+    "swimming pool": 3,
+    "sw": 2
+  }
+}
