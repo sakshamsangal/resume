@@ -318,7 +318,7 @@
                 Connect the Dots (Approach Blueprint)
                 <span class="step">Left Deck</span>
             </h2>
-            <div id="solution-approach" class="connect-textarea" contenteditable="true" placeholder="Start writing your step-by-step strategy here... Type '//' to inject a deck element."></div>
+            <div id="solution-approach" class="connect-textarea" contenteditable="true" placeholder="Start writing your step-by-step strategy here... Type '..' to inject a deck element."></div>
             <ul class="suggest-dropdown" id="suggest-menu"></ul>
         </section>
 
@@ -497,7 +497,7 @@
     function showSuggestions(textBeforeCaret, range) {
         if (state.observations.length === 0) return hideSuggestions();
 
-        const slashIndex = textBeforeCaret.lastIndexOf('//');
+        const slashIndex = textBeforeCaret.lastIndexOf('..');
         const query = textBeforeCaret.substring(slashIndex + 2).toLowerCase();
 
         const matches = state.observations.map((obs, idx) => ({ obs, originalIdx: idx }))
@@ -543,7 +543,7 @@
 
         const node = rangeAtTrigger.startContainer;
         const text = node.textContent;
-        const slashIndex = text.lastIndexOf('//');
+        const slashIndex = text.lastIndexOf('..');
 
         rangeAtTrigger.setStart(node, slashIndex);
         rangeAtTrigger.setEnd(node, rangeAtTrigger.endOffset);
@@ -623,7 +623,7 @@
                 const range = sel.getRangeAt(0);
                 const br = document.createElement('br');
                 const nextLine = document.createTextNode('\n');
-                
+
                 range.insertNode(nextLine);
                 range.insertNode(br);
                 
@@ -638,8 +638,8 @@
 
     solutionInput.addEventListener('input', (e) => {
         const { textBefore, range } = getCaretTextAndRange();
-        if (textBefore.includes('//')) {
-            const lastTrigger = textBefore.lastIndexOf('//');
+        if (textBefore.includes('..')) {
+            const lastTrigger = textBefore.lastIndexOf('..');
             const chunk = textBefore.substring(lastTrigger);
             if (!chunk.includes(' ')) {
                 showSuggestions(textBefore, range);
