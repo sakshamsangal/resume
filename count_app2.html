@@ -26,20 +26,20 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 2px;
+      padding: 4px;
       display: flex;
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
     }
 
-    /* Container Card - Minimal Outer Padding */
+    /* Container Card - Compact Padding */
     .game-card {
       background: var(--card-bg);
       border-radius: 6px;
-      padding: 2px;
+      padding: 4px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      max-width: 900px;
+      max-width: 600px; /* Reduced max-width for a more compact grid */
       width: 100%;
       text-align: center;
       position: relative;
@@ -56,17 +56,17 @@
 
     h1 {
       color: #2563eb;
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin: 0;
     }
 
     .score-board {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       background: #f1f5f9;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.85rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.8rem;
       font-weight: 900;
       color: #334155;
     }
@@ -74,9 +74,9 @@
     /* Target Prompt Area */
     .prompt-box {
       background: #fef3c7;
-      border: 2px dashed var(--highlight-color);
+      border: 1.5px dashed var(--highlight-color);
       border-radius: 6px;
-      padding: 1px 6px;
+      padding: 1px 4px;
       margin-bottom: 2px;
       display: flex;
       align-items: center;
@@ -85,18 +85,18 @@
     }
 
     .prompt-text {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 900;
       color: #92400e;
     }
 
     .target-number {
-      font-size: 1.8rem;
+      font-size: 1.4rem;
       font-weight: 900;
       color: var(--primary-color);
       background: #ffffff;
-      border-radius: 6px;
-      padding: 0px 8px;
+      border-radius: 4px;
+      padding: 0px 6px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       animation: pulse 1.2s infinite alternate;
     }
@@ -108,8 +108,8 @@
 
     /* Feedback Line */
     .feedback {
-      height: 18px;
-      font-size: 0.9rem;
+      height: 16px;
+      font-size: 0.8rem;
       font-weight: 900;
       margin-bottom: 2px;
       display: flex;
@@ -135,33 +135,33 @@
 
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
     }
 
-    /* 10x10 Grid - Zero Padding around Digits */
+    /* Compact 10x10 Grid Layout */
     .grid-container {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       gap: 1px;
-      max-width: 880px;
+      max-width: 580px;
       margin: 0 auto;
     }
 
     .num-btn {
-      aspect-ratio: 1.25; /* Slightly shorter aspect ratio to fit vertically */
+      aspect-ratio: 1.4; /* Shorter button height for a smaller grid */
       font-family: inherit;
-      font-size: 1.35rem; /* Large font size */
-      font-weight: 900;    /* Extra bold */
+      font-size: 1rem;    /* Scaled down font size */
+      font-weight: 900;
       border: 1px solid transparent;
-      border-radius: 3px;
+      border-radius: 2px;
       cursor: pointer;
       background-color: #e0f2fe;
       color: #0284c7;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0;          /* Zero padding around digits */
+      padding: 0;
       margin: 0;
       line-height: 1;
     }
@@ -217,27 +217,27 @@
     }
 
     .result-title {
-      font-size: 2.2rem;
-      margin: 0 0 10px 0;
+      font-size: 1.8rem;
+      margin: 0 0 8px 0;
     }
 
     .result-msg {
-      font-size: 1.3rem;
+      font-size: 1.1rem;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .restart-btn {
       font-family: inherit;
-      font-size: 1.2rem;
+      font-size: 1rem;
       font-weight: 900;
       background: #22c55e;
       color: white;
       border: none;
-      padding: 10px 24px;
-      border-radius: 20px;
+      padding: 8px 20px;
+      border-radius: 16px;
       cursor: pointer;
-      box-shadow: 0 4px 0 #15803d;
+      box-shadow: 0 3px 0 #15803d;
     }
 
     .restart-btn:active {
@@ -245,13 +245,14 @@
       box-shadow: none;
     }
 
-    /* Mobile adjustments */
-    @media (max-width: 550px) {
+    /* Responsive scaling for small mobile screens */
+    @media (max-width: 480px) {
       .num-btn {
-        font-size: 0.95rem;
+        font-size: 0.8rem;
+        aspect-ratio: 1.2;
       }
       .target-number {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
       }
     }
   </style>
@@ -274,7 +275,7 @@
 
     <div class="feedback" id="feedback-msg">Click a number below!</div>
 
-    <!-- Main 100 number buttons (No Series Column) -->
+    <!-- Main 100 number buttons (Compact Grid) -->
     <div class="grid-container" id="grid"></div>
 
     <!-- Final Result Screen -->
