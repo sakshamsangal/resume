@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1 to 100 Counting Game!</title>
+  <style>
+    :root {
+      --bg-color: #f0f9ff;
+      --card-bg: #ffffff;
+      --primary-color: #4f46e5;
+      --text-color: #0f172a;
+      --success-color: #16a34a;
+      --error-color: #dc2626;
+      --highlight-color: #f59e0b;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Fredoka', cursive, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Container Card - Compact Padding */
+    .game-card {
+      background: var(--card-bg);
+      border-radius: 6px;
+      padding: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      max-width: 600px; /* Reduced max-width for a more compact grid */
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+
+    /* Header Row */
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+      padding: 0 4px;
+    }
+
+    h1 {
+      color: #2563eb;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .score-board {
+      display: flex;
+      gap: 6px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: #334155;
+    }
+
+    /* Target Prompt Area */
+    .prompt-box {
+      background: #fef3c7;
+      border: 1.5px dashed var(--highlight-color);
+      border-radius: 6px;
+      padding: 1px 4px;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .prompt-text {
+      font-size: 0.85rem;
+      font-weight: 900;
+      color: #92400e;
+    }
+
+    .target-number {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--primary-color);
+      background: #ffffff;
+      border-radius: 4px;
+      padding: 0px 6px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      animation: pulse 1.2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.08); }
+    }
+
+    /* Feedback Line */
+    .feedback {
+      height: 16px;
+      font-size: 0.8rem;
+      font-weight: 900;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback.success {
+      color: var(--success-color);
+      animation: pop 0.3s ease;
+    }
+
+    .feedback.error {
+      color: var(--error-color);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* Compact 10x10 Grid Layout */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 1px;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .num-btn {
+      aspect-ratio: 1.4; /* Shorter button height for a smaller grid */
+      font-family: inherit;
+      font-size: 1rem;    /* Scaled down font size */
+      font-weight: 900;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      cursor: pointer;
+      background-color: #e0f2fe;
+      color: #0284c7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .num-btn:hover {
+      background-color: #bae6fd;
+    }
+
+    .num-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Alternating row colors */
+    .num-btn:nth-child(20n + 1), .num-btn:nth-child(20n + 2), .num-btn:nth-child(20n + 3),
+    .num-btn:nth-child(20n + 4), .num-btn:nth-child(20n + 5), .num-btn:nth-child(20n + 6),
+    .num-btn:nth-child(20n + 7), .num-btn:nth-child(20n + 8), .num-btn:nth-child(20n + 9),
+    .num-btn:nth-child(20n + 10) {
+      background-color: #fce7f3;
+      color: #db2777;
+    }
+
+    /* Correct Guess Style */
+    .num-btn.found {
+      background-color: #bbf7d0 !important;
+      color: #15803d !important;
+      border-color: #4ade80;
+      cursor: default;
+      opacity: 0.7;
+    }
+
+    /* Incorrect Flash */
+    .num-btn.wrong-flash {
+      background-color: #fecdd3 !important;
+      color: #9f1239 !important;
+      animation: shake 0.3s ease;
+    }
+
+    /* Result Modal / Overlay */
+    .result-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      z-index: 10;
+    }
+
+    .result-overlay.hidden {
+      display: none;
+    }
+
+    .result-title {
+      font-size: 1.8rem;
+      margin: 0 0 8px 0;
+    }
+
+    .result-msg {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .restart-btn {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 900;
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #15803d;
+    }
+
+    .restart-btn:active {
+      transform: translateY(2px);
+      box-shadow: none;
+    }
+
+    /* Responsive scaling for small mobile screens */
+    @media (max-width: 480px) {
+      .num-btn {
+        font-size: 0.8rem;
+        aspect-ratio: 1.2;
+      }
+      .target-number {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="game-card">
+    <div class="header-row">
+      <h1>👏 Find the Number! 🎈</h1>
+      <div class="score-board">
+        <span>⭐ Score: <span id="score">0</span></span>
+        <span>Round: <span id="round">1</span>/10</span>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <span class="prompt-text">Can you find:</span>
+      <span class="target-number" id="target-display">?</span>
+    </div>
+
+    <div class="feedback" id="feedback-msg">Click a number below!</div>
+
+    <!-- Main 100 number buttons (Compact Grid) -->
+    <div class="grid-container" id="grid"></div>
+
+    <!-- Final Result Screen -->
+    <div class="result-overlay hidden" id="result-screen">
+      <h2 class="result-title" id="result-title">🏆 YOU WIN! 🏆</h2>
+      <div class="result-msg" id="result-msg">Awesome job! You got 10/10!</div>
+      <button class="restart-btn" onclick="resetGame()">PLAY AGAIN! 🔄</button>
+    </div>
+  </div>
+
+  <script>
+    let targetNum = null;
+    let score = 0;
+    let currentRound = 1;
+    const maxRounds = 10;
+    let isFirstTry = true;
+    let remainingPool = [];
+
+    const gridEl = document.getElementById('grid');
+    const targetDisplayEl = document.getElementById('target-display');
+    const feedbackEl = document.getElementById('feedback-msg');
+    const scoreEl = document.getElementById('score');
+    const roundEl = document.getElementById('round');
+    const resultScreenEl = document.getElementById('result-screen');
+    const resultTitleEl = document.getElementById('result-title');
+    const resultMsgEl = document.getElementById('result-msg');
+
+    // Web Audio Synthesizer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSound(type) {
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      if (type === 'success') {
+        // Musical chime
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        const now = audioCtx.currentTime;
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now);       // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        osc.frequency.setValueAtTime(1046.50, now + 0.3);// C6
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        osc.start(now);
+        osc.stop(now + 0.6);
+
+        // Clapping sound
+        createApplauseSound();
+      } else if (type === 'error') {
+        // Low boop
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(130, now + 0.25);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      }
+    }
+
+    // Synthesize applause noise
+    function createApplauseSound() {
+      const bufferSize = audioCtx.sampleRate * 1.2;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+
+      for (let i = 0; i < bufferSize; i++) {
+        const isClap = Math.random() < 0.08 ? Math.random() : 0.01;
+        data[i] = (Math.random() * 2 - 1) * isClap;
+      }
+
+      const noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 1200;
+      filter.Q.value = 1.0;
+
+      const gain = audioCtx.createGain();
+      const now = audioCtx.currentTime;
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.5, now + 0.15);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      noise.start(now);
+      noise.stop(now + 1.2);
+    }
+
+    // Build 100-button grid
+    function buildGrid() {
+      gridEl.innerHTML = '';
+      for (let i = 1; i <= 100; i++) {
+        const btn = document.createElement('button');
+        btn.classList.add('num-btn');
+        btn.textContent = i;
+        btn.id = `btn-${i}`;
+        btn.addEventListener('click', () => handleNumClick(i));
+        gridEl.appendChild(btn);
+      }
+    }
+
+    // Pick new target for current round
+    function nextTurn() {
+      if (currentRound > maxRounds) {
+        showFinalResult();
+        return;
+      }
+
+      roundEl.textContent = currentRound;
+      isFirstTry = true;
+
+      const randomIndex = Math.floor(Math.random() * remainingPool.length);
+      targetNum = remainingPool[randomIndex];
+      targetDisplayEl.textContent = targetNum;
+    }
+
+    // Click handler
+    function handleNumClick(clickedNum) {
+      const btn = document.getElementById(`btn-${clickedNum}`);
+
+      if (btn.classList.contains('found')) return;
+
+      if (clickedNum === targetNum) {
+        playSound('success');
+        btn.classList.add('found');
+
+        if (isFirstTry) {
+          score++;
+          scoreEl.textContent = score;
+        }
+
+        remainingPool = remainingPool.filter(n => n !== targetNum);
+
+        const praiseMessages = [
+          "👏 YAY! YOU DID IT! 👏",
+          "🎉 BRAVO! SO SMART! 🎉",
+          "🌟 WOW! GREAT JOB! 🌟",
+          "🙌 CLAP CLAP CLAP! 🙌",
+          "🥳 YOU GOT IT! SUPERSTAR! 🥳"
+        ];
+        const randomPraise = praiseMessages[Math.floor(Math.random() * praiseMessages.length)];
+        
+        feedbackEl.className = "feedback success";
+        feedbackEl.textContent = randomPraise;
+
+        currentRound++;
+        setTimeout(nextTurn, 1000);
+      } else {
+        isFirstTry = false;
+        playSound('error');
+        btn.classList.add('wrong-flash');
+        setTimeout(() => btn.classList.remove('wrong-flash'), 350);
+
+        feedbackEl.className = "feedback error";
+        if (clickedNum < targetNum) {
+          feedbackEl.textContent = `Try higher than ${clickedNum}! 💪`;
+        } else {
+          feedbackEl.textContent = `Try lower than ${clickedNum}! 💪`;
+        }
+      }
+    }
+
+    // Final result screen after 10 questions
+    function showFinalResult() {
+      resultScreenEl.classList.remove('hidden');
+
+      if (score >= 7) {
+        playSound('success');
+        resultTitleEl.textContent = "🥳 YOU WIN! 🎉";
+        resultTitleEl.style.color = "#16a34a";
+        resultMsgEl.textContent = `Amazing! You scored ${score} out of 10! ⭐`;
+      } else {
+        resultTitleEl.textContent = "💪 GOOD TRY! 💪";
+        resultTitleEl.style.color = "#f59e0b";
+        resultMsgEl.textContent = `You scored ${score} out of 10. Let's practice again!`;
+      }
+    }
+
+    // Reset Game
+    function resetGame() {
+      score = 0;
+      currentRound = 1;
+      scoreEl.textContent = score;
+      roundEl.textContent = currentRound;
+      remainingPool = Array.from({ length: 100 }, (_, i) => i + 1);
+      resultScreenEl.classList.add('hidden');
+      feedbackEl.textContent = "Click a number below!";
+      buildGrid();
+      nextTurn();
+    }
+
+    // Initialize Game
+    resetGame();
+  </script>
+</body>
+</html>
